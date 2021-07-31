@@ -1,0 +1,136 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="/favicon.ico">
+        <title>a louise</title>
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                display: table;
+            }
+
+            .sidebar {
+                margin-top: 1ch;
+            }
+
+            .content {
+                display: flex;
+                margin: 0 auto;
+                max-width: 80ch;
+                align-items: center;
+                justify-content: center;
+            }
+            h3 {
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            @media only screen and (max-width: 375px) {
+                .content {
+                    font-size: 0.85rem;
+                    width: 100%;
+                }
+            }
+            a:link,
+            a:visited,
+            a:hover,
+            a:active {
+                text-decoration:none;
+                color:#333
+            }
+
+            .flex-column { flex-direction: column; }
+            .inline-grid { display: inline-grid;}
+            div.language-tag {
+                display: block;
+                float: left;
+                background: #ffd1ac;
+                color: #a04100;
+                padding: 0.2em 0.5em;
+                font-weight: bold;
+                font-size: 1rem;
+                border-radius: 0 0 8px 0;
+            }
+            pre {
+                background-color: #fffcf9;
+                border-radius: 4px;
+                padding: 0;
+                border: 1px solid #ffd1ac;
+                position: relative;
+            }
+            article p { max-width: 80ch;}
+            div.language-tag + .code-container { clear: both; }
+            pre .code-container {
+                padding: 0.8rem;
+                line-height: 1.1;
+            }
+        </style>
+        <link rel="stylesheet" href="style.css?nocache=true">
+    </head>
+    <body>
+        <div class="sidebar">
+            <div class="content">
+                <article class="inline-grid">
+                    <h3 style="margin-top: 0; margin-bottom: 0;">
+                        a<br>
+                        |&gt; path<br/>
+                        |&gt; to<br/>
+                        |&gt; frustration
+                    </h3>
+
+                    <p>I enjoy very much coding. It doesn't matter if I'm creating apps or I'm just fixing bugs. I just enjoy it.
+                    A few weeks ago I got a gig. The client found me through HN's. The rapport was good that the client decided to continue. I was in need of money since I burnt out my savings recently and the current gigs weren't well paid. I didn't doubt so I took the job.
+                    <em>Jeez</em>, big mistake.</p>
+                    <p>I got the permissions to see the repository at BitBucket (amazing that people use it. I dunno why my only two options are Gitlab or Github). </p>
+                    <p>The first thing I noticed is that the backend was done on Rails. Rails 4.2.... <em>what year is this, am I right?</em> I tried to get the gems but it didn't work:</p>
+
+                    <pre><div class="language-tag">Bash code</div><div class="code-container"><code class="language-bash">Unable to require openssl, <span class="hljs-keyword">install</span> OpenSSL <span class="hljs-keyword">and</span> <span class="hljs-keyword">rebuild</span> ruby (preferred)
+<span class="hljs-keyword">or</span> <span class="hljs-keyword">use</span> non-HTTPS sources.
+</code></div></pre>
+
+                    <p>By Odin's Beard! I tried a few other ruby versions but then I got compatibility issues with other gems. Fortunately, it was 2021 and we had Docker. So, I prepared a <code>Dockerfile</code> and a <code>docker-compose.yml</code> and in a matter of minutes the application was running.</p>
+                    <p>I tried to use it but of course I failed. There was no database. I requested a dump from the client and within days I got one. I made some changes to the <code>docker-compose.yml</code> file and I got the database restored.</p>
+                    <p>The same day I was provided with some credentials to play around with the staging version they had. I saw the current stage of the application so everything I was requested to change clicked in my head.</p>
+                    <p>At this point I was a little frustrated. I already burnt a few hours of the projected plan and I only got the app working. My way of working is <em>work fast, deliver fast</em>. Time is money so every minute I waste, it's a dollar the client needs to pay. <em>It can always get worse</em>, I thought.</p>
+                    <p>So, I was ready to start make some changes. Then I checked the frontend. Angular. Mother of God! The last time I used Angular was in 2014. That was the year <em>Malaysia Airlines Flight 370 disappeared</em>. </p>
+                    <p>Clearly I was quite rusty. It didn't help to relieve some stress. On the contrary, I almost decided to cancel the gig. It was only my daily 6km walk that allowed me to cool off a bit.</p>
+                    <p>I got back. I was recharged and ready to start coding. To my luck, I just needed to replicate some behavior that some other developer already created. That was just like 10 mins of coding. I thought well I'll be finishing this quite fast. Around that time the client requested some updates. Stupid me said <em>by tomorrow morning it will be done</em>. The client was super happy and myself I started doubting, as per usual.</p>
+                    <p>I noticed that I only need to make some changes to some SVGs, add a few more and so on. <em>Yeah, this is pretty simple</em> I said to myself. It was simple. You just need to change some coordinates. The SVG path was done already. How hard it can be?</p>
+                    <p>Every time I did some changes I needed to refresh which it took a few seconds, docker was super slow. Also, I was not expert in SVG and on how to draw them. Some of the SVG needed scalation. The client's requests weren't that clear and there was some information missing. It was later provided by other developer. </p>
+                    <p>A few days have passed since stupid me said "tomorrow morning". Gosh! What an idiot. The changes were projected to be done in 2 working days. It was already 2 weeks. My frustration was in another dimension. I felt shitty and I was only half way to deliver the changes.</p>
+                    <p>Stupid Docker was still very bloody slow and myself was wondering: "How is it possible there are no web tools to do this!?". The stress level were so high that I was conviced that the equivalence in Watts was almost what you need to power a house in a 50ºC summer for at least 2 days, 4 hours, 33 minutes and 15 seconds. </p>
+                    <p>To give an example, imagine this:</p>
+
+                    <pre><div class="language-tag">CSS code</div><div class="code-container"><code class="language-css">%<span style="color: #1e90ff; font-weight: bold">some-fancy-DOM-element</span><span style="color: #00aa00; text-decoration: underline">.with-classes</span> {
+  data: <span style="color: #aa5500">&#39;vm.passedInData.immigration_egate1.value&#39;</span>,
+  bg:<span style="color: #aa5500">&quot;&#39;M356.04,365.8h-17.67c-2.21,0-3.93-1.72-3.93-3.93v-17.67c0-2.21,1.72-3.93,3.93-3.93h17.67 c2.21,0,3.93,1.72,3.93,3.93v17.67C359.97,364.08,358.25,365.8,349.04,365.8z&#39;&quot;</span>,
+  fore:<span style="color: #aa5500">&quot;&#39;M355.72,363.5h-16.78c-1.18,0-2.13-0.95-2.13-2.13v-17.02c0-1.18,0.95-2.13,2.13-2.13h17.02 c1.18,0,2.13,0.95,2.13,2.13v17.02C358.09,363.56,358.14,363.5,355.72,363.5z&#39;&quot;</span>,
+  <span style="color: #aa5500">&#39;on-icon&#39;</span> =&gt; <span style="color: #aa5500">&quot;&#39;M340.21,360.89c-4.17,0-7.61-3.44-7.61-7.61s3.44-7.61,7.61-7.61c4.17,0,7.61,3.44,7.61,7.61 C355.06,367.2,351.38,360.89,347.21,360.89z M347.21,357.63c-2.95,0-5.4,2.45-5.4,5.4c0,2.95,2.45,5.4,5.4,5.4s5.4-2.45,5.4-5.4 C352.85,350.09,350.4,347.63,347.21,347.63z&#39;&quot;</span>,
+  <span style="color: #aa5500">&#39;off-icon&#39;</span> =&gt; <span style="color: #aa5500">&quot;&#39;M343.77,347.39l3.44,3.44l3.44-3.44c1.47-1.47,3.44,0.74,2.21,2.21l-3.44,3.44l3.44,3.44 c1.47,1.47-0.74,3.44-2.21,2.21l-3.44-3.44l-3.44,3.44c-1.47,1.47-3.44-0.74-2.21-2.21l3.44-3.44l-3.44-3.44 C340.33,348.12,342.3,346.16,343.77,347.39z&#39;&quot;</span>,
+  <span style="color: #aa5500">&#39;svg-height&#39;</span> =&gt; <span style="color: #009999">541</span>.<span style="color: #009999">41</span>,
+  <span style="color: #aa5500">&#39;svg-width&#39;</span> =&gt; <span style="color: #009999">1666</span>.<span style="color: #009999">85</span>
+}</code></div></pre>
+
+                    <p>Something like that was rendered. I was modifying it in the browser using the Inspect which most of the time was super slow. Sometimes it crashed, god knows why.</p>
+                    <p>In the frontend you can see small changes very indistinguishable and in terms of working hours it was just 4 hrs. I was clearly in pain. I hated myself more than usual. I wanted to quit software development. I felt so useless. But I continued. I told myself <em>it will be over soon</em>.</p>
+                    <p>By the middle of the 3 week of working, I was done. I was done with the project but it was incomplete. I emailed the client explaining her how I failed in asking questions about the project. How I failed in underestimating the changes. And I also mentioned how this was not fulfilling for someone like me. All the actual code was just 10 lines of JS code. The rest of the hours was just tweaking SVG path coordinates.</p>
+                    <p>One day later. They replied. And they were so nice. They understood. I did notice a few developers already touched the code (thank you <code>git blame</code>). It seems the project was dropped by few coders and I learned the hard way the why.</p>
+                    <p>I was so frustrated that only after a few days of delivering the project I realized: <em>dude, jQuery Draggable! You load the library in the browser. You move the SVG path to the actual location. Copy the values. And presto!</em></p>
+                    <p>!EUREKA. It was too late. The stupid frustration made me a moron. Gosh.</p>
+                </article>
+            </div>
+            <div class="content flex-column">
+                <br>
+                <p>—</p>
+                <br>
+                <div>
+                    <a href="/" alt="to home">to go back</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
