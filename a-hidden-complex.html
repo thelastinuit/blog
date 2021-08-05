@@ -1,0 +1,373 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="/favicon.ico">
+        <title>a louise</title>
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                display: table;
+            }
+
+            .sidebar {
+                margin-top: 1ch;
+            }
+
+            .content {
+                display: flex;
+                margin: 0 auto;
+                max-width: 80ch;
+                align-items: center;
+                justify-content: center;
+            }
+            h3 {
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            @media only screen and (max-width: 375px) {
+                .content {
+                    font-size: 0.85rem;
+                    width: 100%;
+                }
+            }
+            a:link,
+            a:visited,
+            a:hover,
+            a:active {
+                text-decoration:none;
+                color:#333
+            }
+
+            .flex-column { flex-direction: column; }
+            .inline-grid { display: inline-grid;}
+            div.language-tag {
+                display: block;
+                float: left;
+                background: #ffd1ac;
+                color: #a04100;
+                padding: 0.2em 0.5em;
+                font-weight: bold;
+                font-size: 1rem;
+                border-radius: 0 0 8px 0;
+            }
+            pre {
+                background-color: #fffcf9;
+                border-radius: 4px;
+                padding: 0;
+                border: 1px solid #ffd1ac;
+                position: relative;
+            }
+            article p { max-width: 80ch;}
+            div.language-tag + .code-container { clear: both; }
+            pre .code-container {
+                padding: 0.8rem;
+                line-height: 1.1;
+            }
+        </style>
+        <link rel="stylesheet" href="style.css?nocache=true">
+    </head>
+    <body>
+        <div class="sidebar">
+            <div class="content">
+                <article class="inline-grid">
+                    <img src="otnot.png" style="width:75%;margin: 0 auto;"/>
+
+                    <h3 style="margin-top: 0; margin-bottom: 0;">
+                        a<br>
+                        |&gt; hidden <br/>
+                        |&gt; complex
+                    </h3>
+
+                    <p>
+                        I consider myself part of the school of thought, to give it name, of Alan Kay and Bret Victor. Sometimes I think we are just doing complex thing because... I actually have no idea why.
+                    </p>
+                    <p>
+                        As an example, granted naïve, let's imagine the following:
+                    </p>
+                    <img src="data.png" alt="Table"/>
+                    <p>
+                        A client wants to show that data in its webpage. A table that shows companies accumulated amount in orders per month plus the number of total orders. The integer value next to the decimal quantity is the orders counter.
+                        So, how to provide that data?
+                    </p>
+                    <p>
+                        There are a lot of ways to approach this. The one I want to tackle is the db approach.
+                    </p>
+                    <p>
+                        Let's start simple. I can get the records where a column will have the order's count, another column can have the total per month and the basic: id, name, etc:
+                    </p>
+                    <pre><div class="language-tag">Elixir code</div><div class="code-container"><code><span style="color: #0000aa">SELECT</span>
+    companies.id,
+    companies.name,
+    DATE_PART(<span style="color: #aa5500">&#39;month&#39;</span>, orders.created_at)::<span style="color: #00aaaa">int</span> <span style="color: #0000aa">AS</span> <span style="color: #0000aa">month</span>,
+    DATE_PART(<span style="color: #aa5500">&#39;year&#39;</span>, orders.created_at)::<span style="color: #00aaaa">int</span> <span style="color: #0000aa">AS</span> <span style="color: #0000aa">year</span>,
+    <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>)) <span style="color: #0000aa">AS</span> total,
+    <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id)) <span style="color: #0000aa">AS</span> <span style="color: #0000aa">count</span>
+<span style="color: #0000aa">FROM</span>
+    orders
+    <span style="color: #0000aa">INNER</span> <span style="color: #0000aa">JOIN</span> companies <span style="color: #0000aa">ON</span> orders.buyer_id = companies.id
+<span style="color: #0000aa">GROUP</span> <span style="color: #0000aa">BY</span>
+    companies.id,
+    companies.name,
+    DATE_PART(<span style="color: #aa5500">&#39;year&#39;</span>, orders.created_at),
+    DATE_PART(<span style="color: #aa5500">&#39;month&#39;</span>, orders.created_at)
+<span style="color: #0000aa">ORDER</span> <span style="color: #0000aa">BY</span>
+    companies.name <span style="color: #0000aa">ASC</span>;</code></div></pre>
+                    <p>
+                        Something like that will do the job. It will produce:
+                    </p>
+                    <table>
+                        <tr>
+                            <th>id</th>
+                            <th>name</th>
+                            <th>month</th>
+                            <th>year</th>
+                            <th>total</th>
+                            <th>count</th>
+                        </tr>
+                        <tr>
+                            <td>300</td>
+                            <td>A Co.</td>
+                            <td>1</td>
+                            <td>2021</td>
+                            <td>588.4000</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>300</td>
+                            <td>A Co.</td>
+                            <td>3</td>
+                            <td>2021</td>
+                            <td>12448.9900</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>300</td>
+                            <td>A Co.</td>
+                            <td>4</td>
+                            <td>2021</td>
+                            <td>363.0000</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>300</td>
+                            <td>A Co.</td>
+                            <td>5</td>
+                            <td>2021</td>
+                            <td>3440.2600</td>
+                            <td>2</td>
+                        </tr>
+                    </table>
+                    <p>
+                        We can use that although there are missing months and the clients wants to show all months of the year. We could that from the db. Do some tricks at the backend to fill the gaps and then deliver it to the frontend.
+                    </p>
+                    <p>
+                        Perhaps we can manage to get months as columns:
+                    <p>
+                    <pre><div class="language-tag">Elixir code</div><div class="code-container"><code><span style="color: #0000aa">SELECT</span>
+    branches.id,
+    branches.name,
+    COALESCE((<span style="color: #0000aa">CASE</span> <span style="color: #0000aa">
+        WHEN</span> DATE_PART(<span style="color: #aa5500">&#39;month&#39;</span>, orders.created_at)::<span style="color: #00aaaa">int</span> = <span style="color: #009999">1</span>
+        <span style="color: #0000aa">THEN</span> <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id))
+             || <span style="color: #aa5500">&#39; &#39;</span> ||
+             <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>)) <span style="color: #0000aa">END</span>), <span style="color: #aa5500">&#39;0 0.0&#39;</span>) <span style="color: #0000aa">&quot;JAN&quot;</span>,
+    COALESCE((<span style="color: #0000aa">CASE</span> <span style="color: #0000aa">
+        WHEN</span> DATE_PART(<span style="color: #aa5500">&#39;month&#39;</span>, orders.created_at)::<span style="color: #00aaaa">int</span> = <span style="color: #009999">2</span>
+        <span style="color: #0000aa">THEN</span> <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id))
+             || <span style="color: #aa5500">&#39; &#39;</span> ||
+             <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>)) <span style="color: #0000aa">END</span>), <span style="color: #aa5500">&#39;0 0.0&#39;</span>) <span style="color: #0000aa">&quot;FEB&quot;</span>,
+    COALESCE((<span style="color: #0000aa">CASE</span> <span style="color: #0000aa">
+        WHEN</span> DATE_PART(<span style="color: #aa5500">&#39;month&#39;</span>, orders.created_at)::<span style="color: #00aaaa">int</span> = <span style="color: #009999">3</span>
+        <span style="color: #0000aa">THEN</span> <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id))
+             || <span style="color: #aa5500">&#39; &#39;</span> ||
+             <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>)) <span style="color: #0000aa">END</span>), <span style="color: #aa5500">&#39;0 0.0&#39;</span>) <span style="color: #0000aa">&quot;MAR&quot;</span>,
+    COALESCE((<span style="color: #0000aa">CASE</span> <span style="color: #0000aa">
+        WHEN</span> DATE_PART(<span style="color: #aa5500">&#39;month&#39;</span>, orders.created_at)::<span style="color: #00aaaa">int</span> = <span style="color: #009999">4</span>
+        <span style="color: #0000aa">THEN</span> <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id))
+             || <span style="color: #aa5500">&#39; &#39;</span> ||
+             <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>)) <span style="color: #0000aa">END</span>), <span style="color: #aa5500">&#39;0 0.0&#39;</span>) <span style="color: #0000aa">&quot;APR&quot;</span>,
+    COALESCE((<span style="color: #0000aa">CASE</span> <span style="color: #0000aa">
+        WHEN</span> DATE_PART(<span style="color: #aa5500">&#39;month&#39;</span>, orders.created_at)::<span style="color: #00aaaa">int</span> = <span style="color: #009999">5</span>
+        <span style="color: #0000aa">THEN</span> <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id))
+             || <span style="color: #aa5500">&#39; &#39;</span> ||
+             <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>)) <span style="color: #0000aa">END</span>), <span style="color: #aa5500">&#39;0 0.0&#39;</span>) <span style="color: #0000aa">&quot;MAY&quot;</span>,
+    COALESCE((<span style="color: #0000aa">CASE</span> <span style="color: #0000aa">
+        WHEN</span> DATE_PART(<span style="color: #aa5500">&#39;month&#39;</span>, orders.created_at)::<span style="color: #00aaaa">int</span> = <span style="color: #009999">6</span>
+        <span style="color: #0000aa">THEN</span> <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id))
+             || <span style="color: #aa5500">&#39; &#39;</span> ||
+             <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>)) <span style="color: #0000aa">END</span>), <span style="color: #aa5500">&#39;0 0.0&#39;</span>) <span style="color: #0000aa">&quot;JUN&quot;</span>,
+<span style="color: #0000aa">FROM</span>
+    orders
+<span style="color: #0000aa">INNER</span> <span style="color: #0000aa">JOIN</span> branches <span style="color: #0000aa">ON</span> orders.buyer_id = branches.id
+<span style="color: #0000aa">GROUP</span> <span style="color: #0000aa">BY</span>
+    branches.id,
+    branches.name,
+    DATE_PART(<span style="color: #aa5500">&#39;year&#39;</span>, orders.created_at),
+    DATE_PART(<span style="color: #aa5500">&#39;month&#39;</span>, orders.created_at)
+<span style="color: #0000aa">ORDER</span> <span style="color: #0000aa">BY</span>
+    branches.name <span style="color: #0000aa">ASC</span>;</code></div></pre>
+                    <p>which produces:</p>
+                    <table>
+                        <tr>
+                            <th>id</th>
+                            <th>name</th>
+                            <th>JAN</th>
+                            <th>FEB</th>
+                            <th>MAR</th>
+                            <th>APR</th>
+                            <th>MAY</th>
+                            <th>JUN</th>
+                        </tr>
+                        <tr>
+                            <td>300</td>
+                            <td>A Co.</td>
+                            <td>1 588.4000</td>
+                            <td>0 0.0</td>
+                            <td>0 0.0</td>
+                            <td>0 0.0</td>
+                            <td>0 0.0</td>
+                            <td>0 0.0</td>
+                        </tr>
+                        <tr>
+                            <td>300</td>
+                            <td>A Co.</td>
+                            <td>0 0.0</td>
+                            <td>0 0.0</td>
+                            <td>1 12448.9900</td>
+                            <td>0 0.0</td>
+                            <td>0 0.0</td>
+                            <td>0 0.0</td>
+                        </tr>
+                        <tr>
+                            <td>300</td>
+                            <td>A Co.</td>
+                            <td>0 0.0</td>
+                            <td>0 0.0</td>
+                            <td>0 0.0</td>
+                            <td>1 363.0000</td>
+                            <td>0 0.0</td>
+                            <td>0 0.0</td>
+                        </tr>
+                        <tr>
+                            <td>300</td>
+                            <td>A Co.</td>
+                            <td>0 0.0</td>
+                            <td>0 0.0</td>
+                            <td>0 0.0</td>
+                            <td>0 0.0</td>
+                            <td>2 3440.2600</td>
+                            <td>0 0.0</td>
+                        </tr>
+                    </table>
+                    <p>Excellent! I have just sort of repetitions of the companies but nothing I can collapse in the backend to one single row.</p>
+                    <p>Can we work it in the db, though?</p>
+                    <p>Yep.</p>
+                    <pre><div class="language-tag">Elixir code</div><div class="code-container"><code><span style="color: #0000aa">SELECT</span>
+    branches.id,
+    branches.name,
+    COALESCE((<span style="color: #0000aa">SELECT</span> <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id)) || <span style="color: #aa5500">&#39; &#39;</span> || <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>))
+     <span style="color: #0000aa">FROM</span> orders
+     <span style="color: #0000aa">WHERE</span>
+        orders.buyer_id = branches.id
+        <span style="color: #0000aa">AND</span> orders.status <span style="color: #0000aa">IN</span>(<span style="color: #009999">1</span>, <span style="color: #009999">2</span>, <span style="color: #009999">3</span>, <span style="color: #009999">4</span>, <span style="color: #009999">5</span>, <span style="color: #009999">6</span>, <span style="color: #009999">7</span>)
+        <span style="color: #0000aa">AND</span> <span style="color: #00aaaa">DATE</span>(orders.created_at) &gt;= (date_part(<span style="color: #aa5500">&#39;year&#39;</span>, <span style="color: #0000aa">CURRENT_DATE</span>) || <span style="color: #aa5500">&#39;-01-01&#39;</span>)::<span style="color: #0000aa">timestamp</span>
+        <span style="color: #0000aa">AND</span> <span style="color: #00aaaa">DATE</span>(orders.created_at) &lt;= (date_part(<span style="color: #aa5500">&#39;year&#39;</span>, <span style="color: #0000aa">CURRENT_DATE</span>) || <span style="color: #aa5500">&#39;-01-31&#39;</span>)::<span style="color: #0000aa">timestamp</span>
+        <span style="color: #0000aa">AND</span> branches.id <span style="color: #0000aa">IN</span>(<span style="color: #009999">300</span>)
+    ), <span style="color: #aa5500">&#39;0 0.0&#39;</span>) <span style="color: #0000aa">&quot;JAN&quot;</span>,
+    COALESCE((<span style="color: #0000aa">SELECT</span> <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id)) || <span style="color: #aa5500">&#39; &#39;</span> || <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>))
+     <span style="color: #0000aa">FROM</span> orders
+     <span style="color: #0000aa">WHERE</span>
+        orders.buyer_id = branches.id
+        <span style="color: #0000aa">AND</span> orders.status <span style="color: #0000aa">IN</span>(<span style="color: #009999">1</span>, <span style="color: #009999">2</span>, <span style="color: #009999">3</span>, <span style="color: #009999">4</span>, <span style="color: #009999">5</span>, <span style="color: #009999">6</span>, <span style="color: #009999">7</span>)
+        <span style="color: #0000aa">AND</span> <span style="color: #00aaaa">DATE</span>(orders.created_at) &gt;= (date_part(<span style="color: #aa5500">&#39;year&#39;</span>, <span style="color: #0000aa">CURRENT_DATE</span>) || <span style="color: #aa5500">&#39;-02-01&#39;</span>)::<span style="color: #0000aa">timestamp</span>
+        <span style="color: #0000aa">AND</span> <span style="color: #00aaaa">DATE</span>(orders.created_at) &lt;= (date_part(<span style="color: #aa5500">&#39;year&#39;</span>, <span style="color: #0000aa">CURRENT_DATE</span>) || <span style="color: #aa5500">&#39;-02-28&#39;</span>)::<span style="color: #0000aa">timestamp</span>
+        <span style="color: #0000aa">AND</span> branches.id <span style="color: #0000aa">IN</span>(<span style="color: #009999">300</span>)
+    ), <span style="color: #aa5500">&#39;0 0.0&#39;</span>) <span style="color: #0000aa">&quot;FEB&quot;</span>,
+    COALESCE((<span style="color: #0000aa">SELECT</span> <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id)) || <span style="color: #aa5500">&#39; &#39;</span> || <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>))
+     <span style="color: #0000aa">FROM</span> orders
+     <span style="color: #0000aa">WHERE</span>
+        orders.buyer_id = branches.id
+        <span style="color: #0000aa">AND</span> orders.status <span style="color: #0000aa">IN</span>(<span style="color: #009999">1</span>, <span style="color: #009999">2</span>, <span style="color: #009999">3</span>, <span style="color: #009999">4</span>, <span style="color: #009999">5</span>, <span style="color: #009999">6</span>, <span style="color: #009999">7</span>)
+        <span style="color: #0000aa">AND</span> <span style="color: #00aaaa">DATE</span>(orders.created_at) &gt;= (date_part(<span style="color: #aa5500">&#39;year&#39;</span>, <span style="color: #0000aa">CURRENT_DATE</span>) || <span style="color: #aa5500">&#39;-03-01&#39;</span>)::<span style="color: #0000aa">timestamp</span>
+        <span style="color: #0000aa">AND</span> <span style="color: #00aaaa">DATE</span>(orders.created_at) &lt;= (date_part(<span style="color: #aa5500">&#39;year&#39;</span>, <span style="color: #0000aa">CURRENT_DATE</span>) || <span style="color: #aa5500">&#39;-03-31&#39;</span>)::<span style="color: #0000aa">timestamp</span>
+        <span style="color: #0000aa">AND</span> branches.id <span style="color: #0000aa">IN</span>(<span style="color: #009999">300</span>)
+    ), <span style="color: #aa5500">&#39;0 0.0&#39;</span>) <span style="color: #0000aa">&quot;MAR&quot;</span>,
+    COALESCE((<span style="color: #0000aa">SELECT</span> <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id)) || <span style="color: #aa5500">&#39; &#39;</span> || <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>))
+     <span style="color: #0000aa">FROM</span> orders
+     <span style="color: #0000aa">WHERE</span>
+        orders.buyer_id = branches.id
+        <span style="color: #0000aa">AND</span> orders.status <span style="color: #0000aa">IN</span>(<span style="color: #009999">1</span>, <span style="color: #009999">2</span>, <span style="color: #009999">3</span>, <span style="color: #009999">4</span>, <span style="color: #009999">5</span>, <span style="color: #009999">6</span>, <span style="color: #009999">7</span>)
+        <span style="color: #0000aa">AND</span> <span style="color: #00aaaa">DATE</span>(orders.created_at) &gt;= (date_part(<span style="color: #aa5500">&#39;year&#39;</span>, <span style="color: #0000aa">CURRENT_DATE</span>) || <span style="color: #aa5500">&#39;-04-01&#39;</span>)::<span style="color: #0000aa">timestamp</span>
+        <span style="color: #0000aa">AND</span> <span style="color: #00aaaa">DATE</span>(orders.created_at) &lt;= (date_part(<span style="color: #aa5500">&#39;year&#39;</span>, <span style="color: #0000aa">CURRENT_DATE</span>) || <span style="color: #aa5500">&#39;-04-30&#39;</span>)::<span style="color: #0000aa">timestamp</span>
+        <span style="color: #0000aa">AND</span> branches.id <span style="color: #0000aa">IN</span>(<span style="color: #009999">300</span>)
+    ), <span style="color: #aa5500">&#39;0 0.0&#39;</span>) <span style="color: #0000aa">&quot;APR&quot;</span>,
+    COALESCE((<span style="color: #0000aa">SELECT</span> <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id)) || <span style="color: #aa5500">&#39; &#39;</span> || <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>))
+     <span style="color: #0000aa">FROM</span> orders
+     <span style="color: #0000aa">WHERE</span>
+        orders.buyer_id = branches.id
+        <span style="color: #0000aa">AND</span> orders.status <span style="color: #0000aa">IN</span>(<span style="color: #009999">1</span>, <span style="color: #009999">2</span>, <span style="color: #009999">3</span>, <span style="color: #009999">4</span>, <span style="color: #009999">5</span>, <span style="color: #009999">6</span>, <span style="color: #009999">7</span>)
+        <span style="color: #0000aa">AND</span> <span style="color: #00aaaa">DATE</span>(orders.created_at) &gt;= (date_part(<span style="color: #aa5500">&#39;year&#39;</span>, <span style="color: #0000aa">CURRENT_DATE</span>) || <span style="color: #aa5500">&#39;-05-01&#39;</span>)::<span style="color: #0000aa">timestamp</span>
+        <span style="color: #0000aa">AND</span> <span style="color: #00aaaa">DATE</span>(orders.created_at) &lt;= (date_part(<span style="color: #aa5500">&#39;year&#39;</span>, <span style="color: #0000aa">CURRENT_DATE</span>) || <span style="color: #aa5500">&#39;-05-31&#39;</span>)::<span style="color: #0000aa">timestamp</span>
+        <span style="color: #0000aa">AND</span> branches.id <span style="color: #0000aa">IN</span>(<span style="color: #009999">300</span>)
+    ), <span style="color: #aa5500">&#39;0 0.0&#39;</span>) <span style="color: #0000aa">&quot;MAY&quot;</span>,
+    COALESCE((<span style="color: #0000aa">SELECT</span> <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id)) || <span style="color: #aa5500">&#39; &#39;</span> || <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>))
+     <span style="color: #0000aa">FROM</span> orders
+     <span style="color: #0000aa">WHERE</span>
+        orders.buyer_id = branches.id
+        <span style="color: #0000aa">AND</span> orders.status <span style="color: #0000aa">IN</span>(<span style="color: #009999">1</span>, <span style="color: #009999">2</span>, <span style="color: #009999">3</span>, <span style="color: #009999">4</span>, <span style="color: #009999">5</span>, <span style="color: #009999">6</span>, <span style="color: #009999">7</span>)
+        <span style="color: #0000aa">AND</span> <span style="color: #00aaaa">DATE</span>(orders.created_at) &gt;= (date_part(<span style="color: #aa5500">&#39;year&#39;</span>, <span style="color: #0000aa">CURRENT_DATE</span>) || <span style="color: #aa5500">&#39;-06-01&#39;</span>)::<span style="color: #0000aa">timestamp</span>
+        <span style="color: #0000aa">AND</span> <span style="color: #00aaaa">DATE</span>(orders.created_at) &lt;= (date_part(<span style="color: #aa5500">&#39;year&#39;</span>, <span style="color: #0000aa">CURRENT_DATE</span>) || <span style="color: #aa5500">&#39;-06-30&#39;</span>)::<span style="color: #0000aa">timestamp</span>
+        <span style="color: #0000aa">AND</span> branches.id <span style="color: #0000aa">IN</span>(<span style="color: #009999">300</span>)
+    ), <span style="color: #aa5500">&#39;0 0.0&#39;</span>) <span style="color: #0000aa">&quot;JUN&quot;</span>
+<span style="color: #0000aa">FROM</span>
+    branches
+<span style="color: #0000aa">WHERE</span>
+    branches.status &lt;&gt; <span style="color: #aa5500">&#39;deleted&#39;</span>
+    <span style="color: #0000aa">AND</span> branches.id <span style="color: #0000aa">IN</span>(<span style="color: #009999">300</span>)
+<span style="color: #0000aa">ORDER</span> <span style="color: #0000aa">BY</span>
+    branches.name <span style="color: #0000aa">ASC</span>;</code></div></pre>
+                    <p><em>drum rolls</em></p>
+                    <table>
+                        <tr>
+                            <th>id</th>
+                            <th>name</th>
+                            <th>JAN</th>
+                            <th>FEB</th>
+                            <th>MAR</th>
+                            <th>APR</th>
+                            <th>MAY</th>
+                            <th>JUN</th>
+                        </tr>
+                        <tr>
+                            <td>300</td>
+                            <td>Casa</td>
+                            <td>1 588.4000</td>
+                            <td>0 0.0</td>
+                            <td>1 12448.9900</td>
+                            <td>1 363.0000</td>
+                            <td>2 3440.2600</td>
+                            <td>0 0.0</td>
+                        </tr>
+                    </table>
+                    <p>Ok, so we satisfied the client. We got the table. I'm confident, there is possible better ways to do it. Still, I do think we are just moving complexity and I'm not longer sure this is actually worth it. It doesn't matter if the complexity moves to a higher language (which in itself is hidden complexity) in the backend or the frontend. At some point, complexity will appear.</p>
+                    <p>Is it worth it?</p>
+                    <p>Can we use this electric charges flux to to something... hmmm better?</p>
+                    <p>Is it even possible?</p>
+                </article>
+            </div>
+            <div class="content flex-column">
+                <br>
+                <p>—</p>
+                <br>
+                <div>
+                    <a href="/" alt="to home">to go back</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
