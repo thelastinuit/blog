@@ -100,7 +100,7 @@
                     <p>
                         Let's start simple. I can get the records where a column will have the order's count, another column can have the total per month and the basic: id, name, etc:
                     </p>
-                    <pre><div class="language-tag">Elixir code</div><div class="code-container"><code><span style="color: #0000aa">SELECT</span>
+                    <pre><div class="language-tag">SQL code</div><div class="code-container"><code><span style="color: #0000aa">SELECT</span>
     companies.id,
     companies.name,
     DATE_PART(<span style="color: #aa5500">&#39;month&#39;</span>, orders.created_at)::<span style="color: #00aaaa">int</span> <span style="color: #0000aa">AS</span> <span style="color: #0000aa">month</span>,
@@ -168,7 +168,7 @@
                     <p>
                         Perhaps we can manage to get months as columns:
                     <p>
-                    <pre><div class="language-tag">Elixir code</div><div class="code-container"><code><span style="color: #0000aa">SELECT</span>
+                    <pre><div class="language-tag">SQL code</div><div class="code-container"><code><span style="color: #0000aa">SELECT</span>
     branches.id,
     branches.name,
     COALESCE((<span style="color: #0000aa">CASE</span> <span style="color: #0000aa">
@@ -267,7 +267,7 @@
                     <p>Excellent! I have just sort of repetitions of the companies but nothing I can collapse in the backend to one single row.</p>
                     <p>Can we work it in the db, though?</p>
                     <p>Yep.</p>
-                    <pre><div class="language-tag">Elixir code</div><div class="code-container"><code><span style="color: #0000aa">SELECT</span>
+                    <pre><div class="language-tag">SQL code</div><div class="code-container"><code><span style="color: #0000aa">SELECT</span>
     branches.id,
     branches.name,
     COALESCE((<span style="color: #0000aa">SELECT</span> <span style="color: #0000aa">COUNT</span>(<span style="color: #0000aa">DISTINCT</span> (orders.id)) || <span style="color: #aa5500">&#39; &#39;</span> || <span style="color: #0000aa">SUM</span>(COALESCE(orders.total, <span style="color: #009999">0</span>.<span style="color: #009999">0</span>))
