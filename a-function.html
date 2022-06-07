@@ -1,0 +1,140 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="/favicon.ico">
+        <title>a |> louise</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/monokai.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                display: table;
+            }
+
+            .sidebar {
+                margin-top: 1ch;
+            }
+
+            .content {
+                display: flex;
+                margin: 0 auto;
+                max-width: 80ch;
+                align-items: center;
+                justify-content: center;
+            }
+            h3 {
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            @media only screen and (max-width: 375px) {
+                .content {
+                    font-size: 0.85rem;
+                    width: 100%;
+                }
+            }
+            a:link,
+            a:visited,
+            a:hover,
+            a:active {
+                text-decoration:none;
+                color:#333
+            }
+
+            .flex-column { flex-direction: column; }
+            .inline-grid { display: inline-grid;}
+            article p { max-width: 80ch;}
+            pre {background: none !important; margin: 1rem 0 !important; padding: 0 !important;}
+        </style>
+        <link rel="stylesheet" href="style.css?nocache=true">
+    </head>
+    <body>
+        <div class="sidebar">
+            <div class="content">
+                <article class="inline-grid">
+                    <h3 style="margin-top: 0; margin-bottom: 0;">
+                        a<br>
+                        |&gt; function
+                    </h3>
+                    <p>So, I found the following function:</p>
+<pre><code class="elixir">def display_eth_address(user) do
+  eth_address = user.eth_address
+  cond do
+    eth_address == nil ->
+      "N/A"
+
+    String.length(eth_address) < 15 ->
+      "N/A"
+
+    true ->
+      "#{String.slice(eth_address, 0..5)}" <>
+      "..#{String.slice(eth_address, -4..-1)}"
+  end
+end
+</code></pre>
+                    <p>
+                    I find the name of the function a little bit misleading or at least provide nothing more than the obvious.
+                    It seems that it tries to show a legend for <em>nil</em> values. It also seems to handle long strings.
+                    I find the creation of the variable <em>eth_address</em> excesive.
+                    </p>
+                    <p>Let's start by removing the variable which I allows to change the function requirements:</p>
+<pre><code class="elixir">def display_eth_address(eth_address, eth_address_length) do
+  cond do
+    eth_address == nil ->
+      "N/A"
+
+    eth_address_length < 15 ->
+      "N/A"
+
+    true ->
+      "#{String.slice(eth_address, 0..5)}" <>
+      "..#{String.slice(eth_address, -4..-1)}"
+  end
+end
+</code></pre>
+                    <p>
+                    We now need to pass two paramenters, <em>eth_address</em> and <em>eth_address_length</em>.
+                    Those two parameters allow the function to make decisions.
+                    </p>
+                    <p>
+                    Also, that change allows to use pattern matching and remove the <em>cond</em>:
+                    </p>
+<pre><code class="elixir">def display_eth_address(nil, _eth_address_length), do: "N/A"
+def display_eth_address(_eth_address, eth_address_length)
+  when eth_address_length < 15,
+  do: display_eth_address(nil, eth_address_length)
+def display_eth_address(eth_address, eth_address_length), do:
+  "#{String.slice(eth_address, 0..5)}" <>
+  "..#{String.slice(eth_address, -4..-1)}"
+</code></pre>
+                    <p>
+                    Naming things is an art and I certainly haven't mastered such thing, although, I think
+                    <em>format_eth_address</em> is a little better.
+                    </p>
+<pre><code class="elixir">def format_eth_address(nil, _eth_address_length), do: "N/A"
+def format_eth_address(_eth_address, eth_address_length)
+  when eth_address_length < 15,
+  do: format_eth_address(nil, eth_address_length)
+def format_eth_address(eth_address, _eth_address_length), do:
+  "#{String.slice(eth_address, 0..5)}" <>
+  "..#{String.slice(eth_address, -4..-1)}"
+</code></pre>
+                    <p>And now I finished this tiny refactor.</p>
+                </article>
+            </div>
+            <div class="content flex-column">
+                <br>
+                <p>—</p>
+                <br>
+                <div>
+                    <a href="/" alt="to home">to go back</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

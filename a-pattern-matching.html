@@ -4,7 +4,10 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" href="/favicon.ico">
-        <title>a louise</title>
+        <title>a |> louise</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/monokai.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
         <style>
             html, body {
                 margin: 0;
@@ -44,25 +47,63 @@
             }
 
             .flex-column { flex-direction: column; }
+            .inline-grid { display: inline-grid;}
+            article p { max-width: 80ch;}
+            pre {background: none !important; margin: 1rem 0 !important; padding: 0 !important;}
         </style>
         <link rel="stylesheet" href="style.css?nocache=true">
     </head>
     <body>
         <div class="sidebar">
             <div class="content">
-                <article>
+                <article class="inline-grid">
                     <h3 style="margin-top: 0; margin-bottom: 0;">
                         a<br>
-                        |&gt; louise<br/>
-                        |&gt; blog
+                        |&gt; pattern
+                        |&gt; matching
                     </h3>
-
-                    <h5>Entries</h5>
+                    <p>So, I found the following function:</p>
+<pre><code class="elixir">def set_class_labels(tuples) do
+  tuples
+  |> Map.keys()
+  |> Enum.map(fn val ->
+    case val do
+      99 -> "Tournaments"
+      1000 -> "Open"
+      val -> val
+    end
+  end)
+end
+</code></pre>
                     <p>
-                    [ <a href="/a-function">a function</a><br/>
-                    , <a href="/a-pattern-matching">a pattern matching</a><br/>
-                    ]
+                    The function is using <em>Map.keys(param)</em> which needs a map, no tuple.
+                    Also, the function is using a case withing <em>Enum.map</em>. This an opportunity for pattern matching super powers.
                     </p>
+                    <p>Let us start by rename the parameter:</p>
+<pre><code class="elixir">def set_class_labels(map) do
+  map
+  |> Map.keys()
+  |> Enum.map(fn val ->
+    case val do
+      99 -> "Tournaments"
+      1000 -> "Open"
+      val -> val
+    end
+  end)
+end
+</code></pre>
+                    <p>Following, we can get rid of the case since it's not necessary:</p>
+<pre><code class="elixir">def set_class_labels(map) do
+  map
+  |> Map.keys()
+  |> Enum.map(fn
+    99 -> "Tournaments"
+    1000 -> "Open"
+    val -> val
+  end)
+end
+</code></pre>
+                    <p>And now I finished this tiny refactor.</p>
                 </article>
             </div>
             <div class="content flex-column">
@@ -70,7 +111,7 @@
                 <p>—</p>
                 <br>
                 <div>
-                    <a href="https://aloui.se" alt="to home">to go back</a>
+                    <a href="/" alt="to home">to go back</a>
                 </div>
             </div>
         </div>
