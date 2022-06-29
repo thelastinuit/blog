@@ -1,0 +1,163 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" href="/favicon.ico">
+        <title>a |> louise</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/monokai.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                display: table;
+            }
+
+            .sidebar {
+                margin-top: 1ch;
+            }
+
+            .content {
+                display: flex;
+                margin: 0 auto;
+                max-width: 80ch;
+                align-items: center;
+                justify-content: center;
+            }
+            h3 {
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            @media only screen and (max-width: 375px) {
+                .content {
+                    font-size: 0.85rem;
+                    width: 100%;
+                }
+            }
+            a:link,
+            a:visited,
+            a:hover,
+            a:active {
+                text-decoration:none;
+                color:#333
+            }
+
+            .flex-column { flex-direction: column; }
+            .inline-grid { display: inline-grid;}
+            article p { max-width: 80ch;}
+            pre {background: none !important; margin: 1rem 0 !important; padding: 0 !important;}
+        </style>
+        <link rel="stylesheet" href="style.css?nocache=true">
+    </head>
+    <body>
+        <div class="sidebar">
+            <div class="content">
+                <article class="inline-grid">
+                    <h3 style="margin-top: 0; margin-bottom: 0;">
+                        a<br/>
+                        |&gt; time<br/>
+                        |&gt; traveller<br/>
+                    </h3>
+                    <p>I want to freeze time for my test. So I came up with the following:</p>
+<pre><code class="elixir">defmodule Chronos do
+  alias __MODULE__, as: Chronos
+
+  use Agent
+
+  @mty_tz "America/Monterrey"
+  @time_format "%Y-%m-%dT%H:%M:%S"
+
+  @spec start_link(list()) :: {:error, any()} | {:ok, pid()}
+  def start_link([]) do
+    Agent.start_link(
+      fn ->
+        %{is_frozen: false, frozen_value: nil}
+      end,
+      name: Chronos
+    )
+  end
+
+  @spec now() :: DateTime.t()
+  def now do
+    get_timestamp()
+    |> Timex.from_unix()
+    |> shift_localtime
+  catch
+    :exit, {:noproc, _} ->
+      Timex.now(@mty_tz)
+      |> shift_localtime
+  end
+
+  @spec get_timestamp() :: integer()
+  def get_timestamp do
+    state = Agent.get(Chronos, fn state -> state end)
+
+    if state[:is_frozen] do
+      state[:frozen_value]
+    else
+      :os.system_time(:second)
+    end
+  end
+
+  @spec freeze() :: atom()
+  def freeze do
+    freeze(:os.system_time(:second))
+  end
+
+  @spec freeze(integer()) :: atom()
+  def freeze(timestamp) do
+    Agent.update(Chronos, fn _state ->
+      %{is_frozen: true, frozen_value: timestamp}
+    end)
+  end
+
+  @spec unfreeze() :: atom()
+  def unfreeze do
+    Agent.update(Chronos, fn _state ->
+      %{is_frozen: false, frozen_value: nil}
+    end)
+  end
+
+  defp shift_localtime(date_time) do
+    date_time
+    |> Timex.format!(@time_format, :strftime)
+    |> Timex.parse!(@time_format, :strftime)
+    |> Timex.to_datetime()
+  end
+end
+</code></pre>
+<p>The tiny module depends on <a href="https://hexdocs.pm/timex/getting-started.html">Timex</a>. Here are some use cases:</p>
+<pre><code class="elixir">### Within your test, define
+
+defp freeze_time(_context) do
+  # 2021-08-12 22:25:00-06:00 -06
+  Chronos.freeze(1_628_828_700)
+end
+
+### And use it at your setup
+
+setup [:freeze_time]
+
+### Now, wherever you call for `Chronos.now()` you will get the frozen datetime.
+
+iex(1)> Chronos.now()
+~U[2021-08-13 04:25:00Z]
+</code></pre>
+                    <p>And now I finished this tiny example.</p>
+                </article>
+            </div>
+            <div class="content flex-column">
+                <br>
+                <p>—</p>
+                <br>
+                <div>
+                    <a href="/" alt="to home">to go back</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
